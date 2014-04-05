@@ -1,7 +1,23 @@
-*.class
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# Package Files #
-*.jar
-*.war
-*.ear
-bin
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+*.pdf
