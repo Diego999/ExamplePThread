@@ -7,6 +7,7 @@
 #include <iostream>
 #include <pthread.h>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -94,7 +95,8 @@ void* VENDOR(void* param)
         cout << "Wallet : " << setprecision(2) << fixed << gest->getDistrib()->getWallet() << endl;
         cout << "Left teddies : " << nbTeddies << endl;
         cout << "Teddy price : " << PRICE_TEDDY << endl << endl;
-
+        if(nbTeddies < NB_TEDDY)
+            cout << NB_TEDDY-nbTeddies << ((NB_TEDDY-nbTeddies>1) ? " Teddies are" : " Teddy is") << " waiting just for you !" << endl << endl;
         pthread_mutex_lock(&_mutex);
 
         double newWallet = 0;
@@ -127,6 +129,12 @@ void* VENDOR(void* param)
             case QUIT:
                 clearScreenDAP();
                 giveChange(gest->getDistrib()->getWallet());
+                cout << "Your teddies arrive !" << endl;
+                pauseDAP();
+                vector<string> teddies = getTeddies();
+                random_shuffle(teddies.begin(), teddies.end());
+                for(int i = 0; i < NB_TEDDY-nbTeddies; ++i)
+                    cout << teddies[i] << endl;
                 pthread_exit((void*)END_THREAD);
 			break;
 		}
