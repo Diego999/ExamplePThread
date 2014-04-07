@@ -16,7 +16,7 @@ pthread_cond_t inserer;
 pthread_cond_t distribuer;
 pthread_cond_t vendeur;
 
-void* MONNAIE(void* param)
+void* MONNEY(void* param)
 {
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -31,17 +31,14 @@ void* MONNAIE(void* param)
         cout << "The accepted coins are as follow : ";
 
 		static vector<double> availablePieces = getAvailablePieces();
-
 		for(vector<double>::iterator it = availablePieces.begin() ; it!=availablePieces.end() ; it++)
-			cout << *it << ",";
-
+            cout << *it << ", ";
 		cout << endl;
 		do
 		{
             cout << "Insert a coin : ";
 
             userInput(n);
-
 			if(!isAvailablePiece(n))
 			{
                 cerr << "Coin rejected" << endl;
@@ -51,7 +48,7 @@ void* MONNAIE(void* param)
                 cout << "The coin of " << n << " has been accepted !" << endl;
 		} while (n <= 0);
 
-        ((Piece*)param)->setValue(n,ID_MONNAIE);
+        static_cast<Piece*>(param)->setValue(n,ID_MONNAIE);
         pauseDAP();
 
 		pthread_cond_signal(&vendeur);
@@ -60,7 +57,7 @@ void* MONNAIE(void* param)
 	return NULL;
 }
 
-void* DISTRIBUTEUR(void* param)
+void* DISTRIBUTOR(void* param)
 {
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
@@ -70,14 +67,14 @@ void* DISTRIBUTEUR(void* param)
         pthread_mutex_lock(&_mutex);
         pthread_cond_wait(&distribuer, &_mutex);
 
-		Commande* ach = (Commande*)param;
+        Commande* ach = static_cast<Commande*>(param);
 
         clearScreenDAP();
         cout << "Left monney : " << ach->getSolde() << endl;
 		if(ach->getBouteille())
-            cout << "You get 1 bottle." << endl;
+            cout << "You get 1 awesome teddy ! :D " << endl;
 		else
-            cout << "Yout don't get any bottle." << endl;
+            cout << "Yout don't get any teddy :/ " << endl;
         pauseDAP();
 
 		pthread_cond_signal(&vendeur);
@@ -86,25 +83,24 @@ void* DISTRIBUTEUR(void* param)
 	return NULL;
 }
 
-void* VENDEUR(void* param)
+void* VENDOR(void* param)
 {
-	int nbBottles = NB_BOTTLES;
-	Gestion* gest = (Gestion*)param;
+    int nbBottles = NB_TEDDY;
+    Gestion* gest = static_cast<Gestion*>(param);
 
 	while(true)
 	{
         clearScreenDAP();
         cout << "Wallet : " << setprecision(2) << fixed << gest->getDistrib()->getSolde() << endl;
-        cout << "Left bottles : " << nbBottles << endl;
-        cout << "Bottle price : " << PRICE_BOTTLE << endl << endl;
+        cout << "Left teddies : " << nbBottles << endl;
+        cout << "Teddy price : " << PRICE_BOTTLE << endl << endl;
 
         pthread_mutex_lock(&_mutex);
 
 		double newSolde = 0;
-
-		switch(menuChoix())
+        switch(menuChoice())
 		{
-            case GET_BOTTLE:
+            case GET_TEDDY:
                 gest->getDistrib()->setRecuBouteille(false,ID_VENDEUR);
 
                 if(gest->getDistrib()->getSolde() >= PRICE_BOTTLE && nbBottles > 0)
@@ -125,20 +121,23 @@ void* VENDEUR(void* param)
                 pthread_cond_wait(&vendeur,&_mutex);
 
 				newSolde = gest->getDistrib()->getSolde() + gest->getPiece()->getValue();
-
                 gest->getDistrib()->setSolde(newSolde, ID_VENDEUR);
                 break;
 
             case QUIT:
                 clearScreenDAP();
-                cout << endl << "The given change : " << gest->getDistrib()->getSolde() << endl << endl;
-				pthread_exit((void*)FIN_THREAD);
+                giveChange(gest->getDistrib()->getSolde());
+                pthread_exit((void*)END_THREAD);
 			break;
 		}
-
         pthread_mutex_unlock(&_mutex);
 	}
 	return NULL;
+}
+
+void giveChange(double value)
+{
+    std::cout << "Change supposed to be given here ! " << std::endl;
 }
 
 void initializeMutexCond()
@@ -164,57 +163,50 @@ void startAutomate()
 	pthread_t threads[3];
 
 	Piece piece = Piece(0.0);
-
 	Commande dis = Commande(0.0,false);
-
 	Gestion ven = Gestion(&piece,&dis);
 
-	pthread_create(&threads[0], NULL, VENDEUR, &ven);
-	pthread_create(&threads[1], NULL, DISTRIBUTEUR, &dis);
-	pthread_create(&threads[2], NULL, MONNAIE, &piece);
+    pthread_create(&threads[0], NULL, VENDOR, &ven);
+    pthread_create(&threads[1], NULL, DISTRIBUTOR, &dis);
+    pthread_create(&threads[2], NULL, MONNEY, &piece);
 
 	void* status;
 	pthread_join(threads[0], &status);
 
-    if(*((int*)status) == FIN_THREAD)
+    if(*static_cast<int*>(status) == END_THREAD)
 	{
 		pthread_cancel(threads[1]);
 		pthread_cancel(threads[2]);
 	}
-
 	destroyMutexCond();
 }
 
-char menuChoix()
+char menuChoice()
 {
-	char c = 0;
-
     cout << "To insert a coin, press key '" << INSERT_COIN << "'." <<endl;
-    cout << "To get a bottle, press key '" << GET_BOTTLE << "'." <<endl;
+    cout << "To get a bottle, press key '" << GET_TEDDY << "'." <<endl;
     cout << "To quit, press key '" << QUIT << "'." <<endl << endl;
 
+    char c = 0;
 	do
 	{
         cout << "Choice : ";
-
 		userInput(c);
         if(!isupper(c))
 			c = toupper(c);
-	} while(c != INSERT_COIN && c != GET_BOTTLE && c != QUIT);
-
+    } while(c != INSERT_COIN && c != GET_TEDDY && c != QUIT);
 	return c;
 }
 
 bool doubleEquals(double a,double b)
 {
     double e = 1e-3;
-	return fabs(a - b) < e;
+    return fabs(a - b) < e;
 }
 
 vector<double> getAvailablePieces()
 {
 	static vector<double> availablePieces;
-
 	if(availablePieces.size() == 0)
 	{
 		availablePieces.push_back(0.05);
@@ -231,7 +223,6 @@ vector<double> getAvailablePieces()
 bool isAvailablePiece(double piece)
 {
 	static vector<double> availablePieces = getAvailablePieces();
-
 	for(vector<double>::iterator it = availablePieces.begin() ; it != availablePieces.end() ; it++)
 		if(doubleEquals(piece, *it))
 			return true;
