@@ -72,7 +72,7 @@ void* DISTRIBUTOR(void* param)
         clearScreenDAP();
         cout << "Left monney : " << ach->getSolde() << endl;
 		if(ach->getBouteille())
-            cout << "You get 1 awesome teddy ! :D " << endl;
+            cout << "You get 1 awesome teddy ! :D You'll get it when you quit the machine." << endl;
 		else
             cout << "Yout don't get any teddy :/ " << endl;
         pauseDAP();
@@ -240,6 +240,20 @@ vector<double> getAvailablePieces()
 		availablePieces.push_back(5.00);
     }
 	return availablePieces;
+}
+
+vector<string> getTeddies()
+{
+    static vector<string> availableTeddies;
+    if(availableTeddies.size() == 0)
+    {
+        availableTeddies.push_back("  c___c\n  /. .\\\n  \\_T_/\n /`   `\\\n(/  .  \\)\n /';-;'\\\n()/   \\()\n");
+        availableTeddies.push_back(",.   ,.\n\\.\\ /,/\n Y Y f\n |. .|\n(\"_, l\n ,- , \\\n(_)(_) Y,.\n _j _j |,'\n(_,(__,'\n");
+        availableTeddies.push_back(".--,       .--,\n( (  \\.---./  ) )\n'.__/o   o\\__.'\n   {=  ^  =}\n    >  -  <\n   /       \\\n  //       \\\n //|   .   |\\\n \"'\\       /'\"_.-~^`'-.\n    \\  _  /--'         `\n   ___)( )(___\n (((__) (__)))\n");
+        availableTeddies.push_back("               __\n       _,..,_ (, )\n    .,'      `,./\n  .' :`.----.': `,\n :   : ^    ^ :   ;\n:   :  6    6  :   ;\n:   :          :   ;\n:   :    __    :   ;\n :   `:'.--.`:'   ;\n  `.  : o  o :  .'\n   :   `----'   :\n     : .  :'`:  . :\n   `.:.'    `.:.'\n");
+        availableTeddies.push_back("        ▄              ▄\n       ▌▒█           ▄▀▒▌\n       ▌▒▒▀▄       ▄▀▒▒▒▐\n      ▐▄▀▒▒▀▀▀▀▄▄▄▀▒▒▒▒▒▐\n    ▄▄▀▒▒▒▒▒▒▒▒▒▒▒█▒▒▄█▒▐\n  ▄▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀██▀▒▌\n ▐▒▒▒▄▄▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄▒▒▌\n ▌▒▒▐▄█▀▒▒▒▒▄▀█▄▒▒▒▒▒▒▒█▒▐\n▐▒▒▒▒▒▒▒▒▒▒▒▌██▀▒▒▒▒▒▒▒▒▀▄▌\n▌▒▀▄██▄▒▒▒▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌\n▌▀▐▄█▄█▌▄▒▀▒▒▒▒▒▒░░░░░░▒▒▒▐\n▐▒▀▐▀▐▀▒▒▄▄▒▄▒▒▒▒▒░░░░░░▒▒▒▌\n▐▒▒▒▀▀▄▄▒▒▒▄▒▒▒▒▒▒░░░░░░▒▒▐\n▌▒▒▒▒▒▒▀▀▀▒▒▒▒▒▒▒▒░░░░▒▒▒▒▌\n▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐\n ▀▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▌\n   ▀▄▒▒▒▒▒▒▒▒▒▒▄▄▄▀▒▒▒▒▄▀\n  ▐▀▒▀▄▄▄▄▄▄▀▀▀▒▒▒▒▒▄▄▀\n ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▀\n");
+    }
+    return availableTeddies;
 }
 
 bool isAvailablePiece(double piece)

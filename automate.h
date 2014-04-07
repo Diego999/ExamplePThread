@@ -2,7 +2,7 @@
 #define AUTOMATE_H
 
 #include <vector>
-
+#include <string>
 const char INSERT_COIN = 'I';
 const char GET_TEDDY = 'G';
 const char QUIT = 'Q';
@@ -21,6 +21,7 @@ void startAutomate();
 char menuChoice();
 bool isAvailablePiece(double n);
 std::vector<double> getAvailablePieces();
+std::vector<std::string> getTeddies();
 void giveChange(double);
 
 static bool doubleEquals(double a, double b);
