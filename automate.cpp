@@ -137,7 +137,29 @@ void* VENDOR(void* param)
 
 void giveChange(double value)
 {
-    std::cout << "Change supposed to be given here ! " << std::endl;
+    static vector<double> availablePieces = getAvailablePieces();
+    vector<double>::iterator it = availablePieces.end()-1;
+    cout << "Here your change my friend : ";
+    bool flag = true;
+    int times = 0;
+    while(value > 0.0 || flag)
+    {
+        if(*it <= value)
+        {
+            value -= *it;
+            ++times;
+            flag = true;
+        }
+        else
+        {
+            if(times > 0)
+                cout << times << "x" << *it << " ";
+            --it;
+            times = 0;
+            flag = false;
+        }
+    }
+    cout << endl;
 }
 
 void initializeMutexCond()
@@ -243,6 +265,6 @@ void clearScreenDAP()
 
 void pauseDAP()
 {
-    std::cout << std::endl << "PRESS ANY KEY TO CONTINUE" << std::endl;
+    std::cout << std::endl << "PRESS ENTER TO CONTINUE" << std::endl;
     cin.ignore().get();
 }
