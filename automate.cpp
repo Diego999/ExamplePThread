@@ -12,9 +12,9 @@ using namespace std;
 
 pthread_mutex_t _mutex;
 
-pthread_cond_t inserer;
-pthread_cond_t distribuer;
-pthread_cond_t vendeur;
+pthread_cond_t insert;
+pthread_cond_t distribute;
+pthread_cond_t vendor;
 
 void* MONNEY(void* param)
 {
@@ -24,7 +24,7 @@ void* MONNEY(void* param)
 	while(true)
 	{
         pthread_mutex_lock(&_mutex);
-        pthread_cond_wait(&inserer, &_mutex);
+        pthread_cond_wait(&insert, &_mutex);
 
 		double n = 0;
         clearScreenDAP();
@@ -48,10 +48,10 @@ void* MONNEY(void* param)
                 cout << "The coin of " << n << " has been accepted !" << endl;
 		} while (n <= 0);
 
-        static_cast<Piece*>(param)->setValue(n,ID_MONNAIE);
+        static_cast<Coin*>(param)->setValue(n,ID_MONNEY);
         pauseDAP();
 
-		pthread_cond_signal(&vendeur);
+        pthread_cond_signal(&vendor);
         pthread_mutex_unlock(&_mutex);
 	}
 	return NULL;
@@ -65,19 +65,19 @@ void* DISTRIBUTOR(void* param)
 	while(true)
 	{
         pthread_mutex_lock(&_mutex);
-        pthread_cond_wait(&distribuer, &_mutex);
+        pthread_cond_wait(&distribute, &_mutex);
 
-        Commande* ach = static_cast<Commande*>(param);
+        Command* ach = static_cast<Command*>(param);
 
         clearScreenDAP();
-        cout << "Left monney : " << ach->getSolde() << endl;
-		if(ach->getBouteille())
+        cout << "Left monney : " << ach->getWallet() << endl;
+        if(ach->getTeddy())
             cout << "You get 1 awesome teddy ! :D You'll get it when you quit the machine." << endl;
 		else
             cout << "Yout don't get any teddy :/ " << endl;
         pauseDAP();
 
-		pthread_cond_signal(&vendeur);
+        pthread_cond_signal(&vendor);
         pthread_mutex_unlock(&_mutex);
 	}
 	return NULL;
@@ -85,48 +85,48 @@ void* DISTRIBUTOR(void* param)
 
 void* VENDOR(void* param)
 {
-    int nbBottles = NB_TEDDY;
-    Gestion* gest = static_cast<Gestion*>(param);
+    int nbTeddies = NB_TEDDY;
+    Manage* gest = static_cast<Manage*>(param);
 
 	while(true)
 	{
         clearScreenDAP();
-        cout << "Wallet : " << setprecision(2) << fixed << gest->getDistrib()->getSolde() << endl;
-        cout << "Left teddies : " << nbBottles << endl;
-        cout << "Teddy price : " << PRICE_BOTTLE << endl << endl;
+        cout << "Wallet : " << setprecision(2) << fixed << gest->getDistrib()->getWallet() << endl;
+        cout << "Left teddies : " << nbTeddies << endl;
+        cout << "Teddy price : " << PRICE_TEDDY << endl << endl;
 
         pthread_mutex_lock(&_mutex);
 
-		double newSolde = 0;
+        double newWallet = 0;
         switch(menuChoice())
 		{
             case GET_TEDDY:
-                gest->getDistrib()->setRecuBouteille(false,ID_VENDEUR);
+                gest->getDistrib()->setTeddy(false,ID_VENDOR);
 
-                if(gest->getDistrib()->getSolde() >= PRICE_BOTTLE && nbBottles > 0)
+                if(gest->getDistrib()->getWallet() >= PRICE_TEDDY && nbTeddies > 0)
 				{
-					newSolde = gest->getDistrib()->getSolde() - PRICE_BOTTLE;
+                    newWallet = gest->getDistrib()->getWallet() - PRICE_TEDDY;
 
-                    gest->getDistrib()->setSolde(newSolde,ID_VENDEUR);
-                    nbBottles--;
-                    gest->getDistrib()->setRecuBouteille(true,ID_VENDEUR);
+                    gest->getDistrib()->setWallet(newWallet,ID_VENDOR);
+                    --nbTeddies;
+                    gest->getDistrib()->setTeddy(true,ID_VENDOR);
                 }
 
-                pthread_cond_signal(&distribuer);
-                pthread_cond_wait(&vendeur,&_mutex);
+                pthread_cond_signal(&distribute);
+                pthread_cond_wait(&vendor,&_mutex);
                 break;
 
             case INSERT_COIN:
-                pthread_cond_signal(&inserer);
-                pthread_cond_wait(&vendeur,&_mutex);
+                pthread_cond_signal(&insert);
+                pthread_cond_wait(&vendor,&_mutex);
 
-				newSolde = gest->getDistrib()->getSolde() + gest->getPiece()->getValue();
-                gest->getDistrib()->setSolde(newSolde, ID_VENDEUR);
+                newWallet = gest->getDistrib()->getWallet() + gest->getCoin()->getValue();
+                gest->getDistrib()->setWallet(newWallet, ID_VENDOR);
                 break;
 
             case QUIT:
                 clearScreenDAP();
-                giveChange(gest->getDistrib()->getSolde());
+                giveChange(gest->getDistrib()->getWallet());
                 pthread_exit((void*)END_THREAD);
 			break;
 		}
@@ -165,17 +165,17 @@ void giveChange(double value)
 void initializeMutexCond()
 {
     pthread_mutex_init(&_mutex, NULL);
-	pthread_cond_init (&inserer, NULL);
-	pthread_cond_init (&distribuer, NULL);
-	pthread_cond_init (&vendeur, NULL);
+    pthread_cond_init (&insert, NULL);
+    pthread_cond_init (&distribute, NULL);
+    pthread_cond_init (&vendor, NULL);
 }
 
 void destroyMutexCond()
 {
     pthread_mutex_destroy(&_mutex);
-	pthread_cond_destroy(&inserer);
-	pthread_cond_destroy(&distribuer);
-	pthread_cond_destroy(&vendeur);
+    pthread_cond_destroy(&insert);
+    pthread_cond_destroy(&distribute);
+    pthread_cond_destroy(&vendor);
 }
 
 void startAutomate()
@@ -184,9 +184,9 @@ void startAutomate()
 
 	pthread_t threads[3];
 
-	Piece piece = Piece(0.0);
-	Commande dis = Commande(0.0,false);
-	Gestion ven = Gestion(&piece,&dis);
+    Coin piece = Coin(0.0);
+    Command dis = Command(0.0,false);
+    Manage ven = Manage(&piece,&dis);
 
     pthread_create(&threads[0], NULL, VENDOR, &ven);
     pthread_create(&threads[1], NULL, DISTRIBUTOR, &dis);
@@ -260,7 +260,7 @@ bool isAvailablePiece(double piece)
 {
 	static vector<double> availablePieces = getAvailablePieces();
 	for(vector<double>::iterator it = availablePieces.begin() ; it != availablePieces.end() ; it++)
-		if(doubleEquals(piece, *it))
+        if(fabs(piece-*it) < 1e-3)
 			return true;
 	return false;
 }

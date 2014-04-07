@@ -1,19 +1,19 @@
 #include "structures.h"
 
-void Commande::setSolde(double s,int id)
+void Command::setWallet(double w,int id)
 {
-	if(id == ID_VENDEUR)
-		solde = s;
+    if(id == ID_VENDOR)
+        wallet = w;
 }
 
-void Commande::setRecuBouteille(bool b,int id)
+void Command::setTeddy(bool t,int id)
 {
-	if(id == ID_VENDEUR)
-		bouteille = b;
+    if(id == ID_VENDOR)
+        teddy = t;
 }
 
-void Piece::setValue(double v,int id)
+void Coin::setValue(double v,int id)
 {
-	if(id == ID_MONNAIE)
-		valeur = v;
+    if(id == ID_MONNEY)
+        value = v;
 }

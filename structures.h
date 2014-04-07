@@ -1,44 +1,44 @@
 #ifndef STRUCTURES_H
 #define STRUCTURES_H
 
-#define ID_VENDEUR 1
-#define ID_MONNAIE 2
-#define ID_DISTRIBUTEUR 3
+#define ID_VENDOR 1
+#define ID_MONNEY 2
+#define ID_DISTRIBUTOR 3
 
-class Commande
+class Command
 {
 public:
-	Commande(double s, bool b) : solde(s), bouteille(b) {}
-	double getSolde() const { return solde; }
-	double getBouteille() const { return bouteille; }
+    Command(double s, bool b) : wallet(s), teddy(b) {}
+    double getWallet() const { return wallet; }
+    double getTeddy() const { return teddy; }
 
-	void setSolde(double s, int id);
-    void setRecuBouteille(bool b, int id);
+    void setWallet(double s, int id);
+    void setTeddy(bool b, int id);
 private:
-	double solde;
-	bool bouteille;
+    double wallet;
+    bool teddy;
 };
 
-class Piece
+class Coin
 {
 public:
-	Piece(double v):valeur(v) {}
-	double getValue() const { return valeur; }
+    Coin(double v):value(v) {}
+    double getValue() const { return value; }
 	void setValue(double v,int id);
 private:
-	double valeur;
+    double value;
 };
 
-class Gestion
+class Manage
 {
 public:
-	Gestion(Piece* p,Commande* d):piece(p),distrib(d){}
-	Piece* getPiece() const {return piece;}
-	Commande* getDistrib() const {return distrib;}
+    Manage(Coin* c,Command* d):coin(c),distrib(d){}
+    Coin* getCoin() const {return coin;}
+    Command* getDistrib() const {return distrib;}
 
 private:
-	Piece* piece;
-	Commande* distrib;
+    Coin* coin;
+    Command* distrib;
 };
 
 #endif
