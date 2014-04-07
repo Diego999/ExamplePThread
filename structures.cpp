@@ -1,10 +1,3 @@
-/*
- * Automate
- * Diego Antognini & Sébastien Vaucher
- * 17 Décembre 2012
- * structures.cpp : Fichiers d'implémentation des structures paramètres
- */
-
 #include "structures.h"
 
 void Commande::setSolde(double s,int id)
