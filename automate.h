@@ -21,7 +21,7 @@ void startAutomate();
 char menuChoice();
 bool isAvailablePiece(double n);
 std::vector<double> getAvailablePieces();
-std::vector<std::string> getTeddies();
+std::vector<std::vector<std::string> > &getTeddies();
 void giveChange(double);
 
 template<typename T>
