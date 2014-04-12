@@ -149,7 +149,7 @@ void* VENDOR(void* param)
             case QUIT:
                 clearScreenDAP();
                 giveChange(gest->getDistrib()->getWallet());
-                pthread_exit((void*)END_THREAD);
+                pthread_exit(static_cast<void*>(0));
 			break;
 		}
         pthread_mutex_unlock(&_mutex);
@@ -161,27 +161,21 @@ void giveChange(double value)
 {
     static vector<double> availablePieces = getAvailablePieces();
     vector<double>::iterator it = availablePieces.end()-1;
-    cout << "Here your change my friend : ";
-    bool flag = true;
-    int times = 0;
-    while(value > 0.0 || flag)
-    {
-        if(*it <= value)
-        {
-            value -= *it;
-            ++times;
-            flag = true;
-        }
-        else
-        {
-            if(times > 0)
-                cout << times << "x" << *it << " ";
-            --it;
-            times = 0;
-            flag = false;
-        }
-    }
-    cout << endl;
+		if(value > 0.0 && !doubleEquals(value, 0))
+		{
+	    cout << "Here your change my friend : ";
+	    while(value > 0.0 && !doubleEquals(value, 0) && it >= availablePieces.begin())
+	    {
+	        if(*it < value || doubleEquals(value, *it))
+	        {
+	            value -= *it;
+	            cout << *it << " ";
+	        }
+	        else
+						--it;
+	    }
+		}
+    cout << endl << "Good bye and see you soon for more awesome teddies !" << endl;
 }
 
 void initializeMutexCond()
@@ -217,11 +211,9 @@ void startAutomate()
 	void* status;
 	pthread_join(threads[0], &status);
 
-    if(*static_cast<int*>(status) == END_THREAD)
-	{
-		pthread_cancel(threads[1]);
-		pthread_cancel(threads[2]);
-	}
+	pthread_cancel(threads[1]);
+	pthread_cancel(threads[2]);
+
 	destroyMutexCond();
 }
 
