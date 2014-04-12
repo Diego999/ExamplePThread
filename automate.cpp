@@ -78,6 +78,7 @@ void* DISTRIBUTOR(void* param)
             cout << "There isn't any more teddies :/ We have been stolen by a tux. Oh god, how it happened ?" << endl;
         else if(ach->getWallet() <= PRICE_TEDDY)
             cout << "You don't have enough money ! Get find a job moron ... Or just insert coins if you already have one !" << endl;
+            cout << "You don't have enough money ! Get find a job moron ... Or just insert coins if you already have some !" << endl;
         pauseDAP();
 
         pthread_cond_signal(&vendor);
