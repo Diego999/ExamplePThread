@@ -71,7 +71,7 @@ void* DISTRIBUTOR(void* param)
         Command* ach = static_cast<Command*>(param);
 
         clearScreenDAP();
-        cout << "Left monney : " << ach->getWallet() << endl;
+				cout << "Left monney : " << ach->getWallet() << endl;
         if(ach->getTeddy())
             cout << "You get 1 awesome teddy ! :D" << endl;
         else if(getTeddies().size() <= 0)
@@ -94,6 +94,12 @@ void* VENDOR(void* param)
 	while(true)
 	{
         clearScreenDAP();
+				cout << "  ______         __    ___              ___         __                        __" << endl;
+				cout << " /_  _____  ____/ ____/ (____  _____   /   | __  __/ /_____  ____ ___  ____ _/ /_____ _" << endl;
+				cout << "  / / / _ \\/ __  / __  / / _ \\/ ___/  / /| |/ / / / __/ __ \\/ __ `__ \\/ __ `/ __/ __ `/" << endl;
+				cout << " / / /  __/ /_/ / /_/ / /  __(__  )  / ___ / /_/ / /_/ /_/ / / / / / / /_/ / /_/ /_/ / " << endl;
+				cout << "/_/  \\___/\\__,_/\\__,_/_/\\___/____/  /_/  |_\\__,_/\\__/\\____/_/ /_/ /_/\\__,_/\\__/\\__,_/" << endl;
+				cout << endl;
         cout << "Wallet : " << setprecision(2) << fixed << gest->getDistrib()->getWallet() << endl;
         cout << "Left teddies : " << nbTeddies << endl;
         cout << "Teddy price : " << PRICE_TEDDY << endl << endl;
@@ -175,7 +181,15 @@ void giveChange(double value)
 						--it;
 	    }
 		}
-    cout << endl << "Good bye and see you soon for more awesome teddies !" << endl;
+    cout << endl << "Goodbye and see you soon for more awesome teddies !" << endl;
+		cout << endl << "THE TEDDIES AUTOMATA WAS REALIZED BY " << endl;
+		cout <<" _____         ______     _____           _                       _" << endl;
+		cout <<"(____ \\   /\\  (_____ \\   (_____)         | |           _         (_)"<< endl;
+		cout <<" _   \\ \\ /  \\  _____) )     _   ____   _ | |_   _  ___| |_   ____ _  ____  ___ " << endl;
+		cout <<"| |   | / /\\ \\|  ____/     | | |  _ \\ / || | | | |/___|  _) / ___| |/ _  )/___)" << endl;
+		cout <<"| |__/ | |__| | |         _| |_| | | ( (_| | |_| |___ | |__| |   | ( (/ /|___ |" << endl;
+		cout <<"|_____/|______|_|        (_____|_| |_|\\____|\\____(___/ \\___|_|   |_|\\____(___/" << endl;
+		cout << endl << "CEO : DIEGO ANTOGNINI & ALEXANDRE PEREZ. " << endl;
 }
 
 void initializeMutexCond()
@@ -219,7 +233,7 @@ void startAutomate()
 
 char menuChoice()
 {
-    cout << "To insert a coin, press key '" << INSERT_COIN << "'." <<endl;
+	  cout << "To insert a coin, press key '" << INSERT_COIN << "'." <<endl;
     cout << "To get a teddy, press key '" << GET_TEDDY << "'." <<endl;
     cout << "To quit, press key '" << QUIT << "'." <<endl << endl;
 
