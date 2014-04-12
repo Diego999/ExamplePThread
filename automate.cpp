@@ -121,6 +121,8 @@ void* VENDOR(void* param)
                     for(size_t j = 1; j <= teddies.size(); ++j)
                     {
 											  clearScreenDAP();
+												for(int k = j; k > 0; --k)
+														cout << endl;
                         for(size_t k = 0; k < teddies.size()-j; ++k)
                             cout << teddies[k] << endl;
                         sleep(1);
