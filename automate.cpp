@@ -77,7 +77,6 @@ void* DISTRIBUTOR(void* param)
         else if(getTeddies().size() <= 0)
             cout << "There isn't any more teddies :/ We have been stolen by a tux. Oh god, how it happened ?" << endl;
         else if(ach->getWallet() <= PRICE_TEDDY)
-            cout << "You don't have enough money ! Get find a job moron ... Or just insert coins if you already have one !" << endl;
             cout << "You don't have enough money ! Get find a job moron ... Or just insert coins if you already have some !" << endl;
         pauseDAP();
 
@@ -114,15 +113,17 @@ void* VENDOR(void* param)
                     teddiesBank.erase(teddiesBank.end()-1);
                     for(size_t j = 0; j <= teddies.size(); ++j)
                     {
+											  clearScreenDAP();
                         for(int k = j; k > 0; --k)
                             cout << teddies[teddies.size()-k] << endl;
-                        clearScreenDAP();
+											   sleep(1);
                     }
                     for(size_t j = 1; j <= teddies.size(); ++j)
                     {
+											  clearScreenDAP();
                         for(size_t k = 0; k < teddies.size()-j; ++k)
                             cout << teddies[k] << endl;
-                        clearScreenDAP();
+                        sleep(1);
                     }
 
                     newWallet = gest->getDistrib()->getWallet() - PRICE_TEDDY;
@@ -268,7 +269,7 @@ vector<vector<string> >& getTeddies()
     if(!init)
     {
         init = true;
-        std::srand ( unsigned ( std::time(0) ) );
+        std::srand(unsigned(time(0) ) );
         {
             vector<string> v1;
             v1.push_back("  c___c");
@@ -377,9 +378,6 @@ void userInput(T& v)
 void clearScreenDAP()
 {
     system("clear");
-    //for(int n = 0; n < 10; n++)
-    //    printf("\n\n");
-    sleep(1);
 }
 
 void pauseDAP()
