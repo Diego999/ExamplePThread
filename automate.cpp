@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include <vector>
 #include <algorithm>
+#include <unistd.h>
 
 using namespace std;
 
@@ -122,7 +123,7 @@ void* VENDOR(void* param)
 											  clearScreenDAP();
                         for(int k = j; k > 0; --k)
                             cout << teddies[teddies.size()-k] << endl;
-											   sleep(1);
+											   usleep(500*1000);
                     }
                     for(size_t j = 1; j <= teddies.size(); ++j)
                     {
@@ -131,7 +132,7 @@ void* VENDOR(void* param)
 														cout << endl;
                         for(size_t k = 0; k < teddies.size()-j; ++k)
                             cout << teddies[k] << endl;
-                        sleep(1);
+                        usleep(500*1000);
                     }
 
                     newWallet = gest->getDistrib()->getWallet() - PRICE_TEDDY;
