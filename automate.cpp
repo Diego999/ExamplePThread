@@ -12,12 +12,15 @@
 
 using namespace std;
 
+// The common mutex
 pthread_mutex_t _mutex;
 
+// The 3 condition variables
 pthread_cond_t insert;
 pthread_cond_t distribute;
 pthread_cond_t vendor;
 
+//Task which inserts monney
 void* MONNEY(void* param)
 {
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -59,6 +62,7 @@ void* MONNEY(void* param)
 	return NULL;
 }
 
+//Task which executes the command
 void* DISTRIBUTOR(void* param)
 {
 	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -77,7 +81,7 @@ void* DISTRIBUTOR(void* param)
             cout << "You get 1 awesome teddy ! :D" << endl;
         else if(getTeddies().size() <= 0)
             cout << "There isn't any more teddies :/ We have been stolen by a tux. Oh god, how it happened ?" << endl;
-        else if(ach->getWallet() <= PRICE_TEDDY)
+        else if(ach->getWallet() < PRICE_TEDDY)
             cout << "You don't have enough money ! Get find a job moron ... Or just insert coins if you already have some !" << endl;
         pauseDAP();
 
@@ -86,7 +90,7 @@ void* DISTRIBUTOR(void* param)
 	}
 	return NULL;
 }
-
+//Task which manages the wallet, the teddies and the menu
 void* VENDOR(void* param)
 {
     int nbTeddies = NB_TEDDY;
@@ -113,8 +117,10 @@ void* VENDOR(void* param)
             case GET_TEDDY:
                 gest->getDistrib()->setTeddy(false,ID_VENDOR);
 
+                //If the wallet has enough monney and there is still some teddies
                 if(gest->getDistrib()->getWallet() >= PRICE_TEDDY && nbTeddies > 0)
                 {
+                    //ANIMATION
                     vector<vector<string> >& teddiesBank = getTeddies();
                     vector<string> teddies = teddiesBank.back();
                     teddiesBank.erase(teddiesBank.end()-1);
@@ -135,6 +141,7 @@ void* VENDOR(void* param)
                         usleep(500*1000);
                     }
 
+                    //Update the wallet and the number of teddies
                     newWallet = gest->getDistrib()->getWallet() - PRICE_TEDDY;
                     gest->getDistrib()->setWallet(newWallet,ID_VENDOR);
                     --nbTeddies;
@@ -168,20 +175,20 @@ void giveChange(double value)
 {
     static vector<double> availablePieces = getAvailablePieces();
     vector<double>::iterator it = availablePieces.end()-1;
-		if(value > 0.0 && !doubleEquals(value, 0))
-		{
-	    cout << "Here your change my friend : ";
-	    while(value > 0.0 && !doubleEquals(value, 0) && it >= availablePieces.begin())
-	    {
-	        if(*it < value || doubleEquals(value, *it))
-	        {
-	            value -= *it;
-	            cout << *it << " ";
-	        }
-	        else
-						--it;
-	    }
-		}
+    if(value > 0.0 && !doubleEquals(value, 0))
+    {
+        cout << "Here your change my friend : ";
+        while(value > 0.0 && !doubleEquals(value, 0) && it >= availablePieces.begin())
+        {
+            if(*it < value || doubleEquals(value, *it))
+            {
+                value -= *it;
+                cout << *it << " ";
+            }
+            else
+                        --it;
+        }
+    }
     cout << endl << "Goodbye and see you soon for more awesome teddies !" << endl;
 		cout << endl << "THE TEDDIES AUTOMATA WAS REALIZED BY " << endl;
 		cout <<" _____         ______     _____           _                       _" << endl;
@@ -234,7 +241,7 @@ void startAutomate()
 
 char menuChoice()
 {
-	  cout << "To insert a coin, press key '" << INSERT_COIN << "'." <<endl;
+    cout << "To insert a coin, press key '" << INSERT_COIN << "'." <<endl;
     cout << "To get a teddy, press key '" << GET_TEDDY << "'." <<endl;
     cout << "To quit, press key '" << QUIT << "'." <<endl << endl;
 

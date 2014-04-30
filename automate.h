@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+
 const char INSERT_COIN = 'I';
 const char GET_TEDDY = 'G';
 const char QUIT = 'Q';
